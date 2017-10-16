@@ -3,36 +3,49 @@ import csv
 
 
 class Main:
-    def __init__(self):
+    def __init__(self, file_path: str):
+        self.file_path = file_path
         self.data = None
-        self.number_of_project = 0
+        self.number_of_projects = 0
         self.number_of_experts = 0
         self.number_of_features = 0
-        self.experts = None
-        self.number_of_project = None
+        self.experts = []
+        self.projects = []
 
     def print_everything(self):
         print("Input data parsed: \n")
         print(self.data)
         print("\n")
+        print("Number of projects: " + str(self.number_of_projects))
         print("Number of experts: " + str(self.number_of_experts))
-        print("Number of projects: " + str(self.number_of_project))
         print("Number of features: " + str(self.number_of_features))
+        print("Obtained projects: " + str(self.projects))
+        print("Obtained experts: " + str(self.experts))
 
-    def read_csv(self, file_path: str):
+    def read_csv(self):
         #  This will read our CSV file into a 2D list
-        print('Reading input file: ' + file_path)
-        with open(file_path, 'r') as f:
+        print('Reading input file: ' + self.file_path)
+        with open(self.file_path, 'r') as f:
             reader = csv.reader(f)
             self.data = list(reader)  # Here we store the input file
-            self.obtain_header_data(self.data)
+            self.obtain_header_data()
+            self.obtain_projects()
+            self.obtain_experts()
             self.print_everything()
 
-    def obtain_header_data(self, row_list: list):
-        header = row_list.__getitem__(0)
-        self.number_of_project = int(header[0])
+    def obtain_header_data(self):
+        header = self.data[0]
+        self.number_of_projects = int(header[0])
         self.number_of_experts = int(header[1])
         self.number_of_features = int(header[2])
+
+    def obtain_projects(self):
+        for x in range(1, self.number_of_projects + 1):
+            self.projects.append(self.data[x])
+
+    def obtain_experts(self):
+        for x in range(self.number_of_projects + 1, self.number_of_experts + self.number_of_experts + 1):
+            self.experts.append(self.data[x])
 
 
 if __name__ == '__main__':
@@ -43,5 +56,5 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--file', nargs='?', type=str, default='../resources/test.csv',
                         const='../resources/test.csv', help='Path to input CSV file to be read')
     program_args = vars(parser.parse_args())
-    main = Main()
-    main.read_csv(program_args['file'])
+    main = Main(program_args['file'])
+    main.read_csv()
