@@ -44,7 +44,7 @@ class Main:
             self.projects.append(self.data[x])
 
     def obtain_experts(self):
-        for x in range(self.number_of_projects + 1, self.number_of_experts + self.number_of_experts + 1):
+        for x in range(self.number_of_projects + 1, self.number_of_projects + self.number_of_experts + 1):
             self.experts.append(self.data[x])
 
 
