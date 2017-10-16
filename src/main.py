@@ -13,9 +13,8 @@ class Main:
         self.projects = []
 
     def print_everything(self):
-        print("Input data parsed: \n")
+        print("Input data parsed:")
         print(self.data)
-        print("\n")
         print("Number of projects: " + str(self.number_of_projects))
         print("Number of experts: " + str(self.number_of_experts))
         print("Number of features: " + str(self.number_of_features))
@@ -41,11 +40,11 @@ class Main:
 
     def obtain_projects(self):
         for x in range(1, self.number_of_projects + 1):
-            self.projects.append(self.data[x])
+            self.projects.append(list(map(int, self.data[x])))
 
     def obtain_experts(self):
         for x in range(self.number_of_projects + 1, self.number_of_projects + self.number_of_experts + 1):
-            self.experts.append(self.data[x])
+            self.experts.append(list(map(int, self.data[x])))
 
 
 if __name__ == '__main__':
