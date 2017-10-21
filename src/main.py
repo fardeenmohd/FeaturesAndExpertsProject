@@ -84,14 +84,17 @@ class Main:
             for subset in itertools.permutations(project_indices, length):
                 self.project_combinations.append(list(subset))
 
+        print("Project combinations: " + str(self.project_combinations))
+        print("Expert combinations: " + str(self.expert_combinations))
+        
         # Loop through every combination of experts and projects and find a solution
         for expert_combination in self.expert_combinations:
             for project_combination in self.project_combinations:
                 # Copy list of experts and projects to a temp variable so we can distinguish between solutions
                 current_experts = list([list(self.experts[i]) for i in expert_combination])
                 current_projects = list([list(self.projects[i]) for i in project_combination])
-                print("Current Projects: " + str(current_projects))
-                print("Current experts: " + str(current_experts))
+                # print("Current Projects: " + str(current_projects))
+                # print("Current experts: " + str(current_experts))
                 expert_idx = 0
                 experts_used = []
                 projects_solved = []
