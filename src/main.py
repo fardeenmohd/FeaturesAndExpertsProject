@@ -4,25 +4,64 @@ import itertools
 from typing import List
 
 
-class Solution:
-    def __init__(self, experts_used: List[int], projects_solved: List[int]):
-        self.experts_used = experts_used
-        self.num_of_experts_used = len(experts_used)
-        self.projects_solved = projects_solved
-        '''
-        for i in range(len(projects)):
-            if all([val == 0 for val in projects[i]]):
-                self.projects_solved.append(projects[i])
-        '''
+class Expert:
+    def __init__(self):
+        self.features = []
+        self.used_for_feature = -1
 
-        self.num_of_projects_solved = len(self.projects_solved)
+
+class Project:
+
+    def __lt__(self, other):
+        sum1 = sum(self.experts_needed)
+        sum2 = sum(other.experts_needed)
+        return sum1 < sum2
+
+    def __eq__(self, other):
+        sum1 = sum(self.experts_needed)
+        sum2 = sum(other.experts_needed)
+        return sum1 == sum2
+
+    def __init__(self):
+        self.experts_needed = []
+        self.experts_used = []
+
+
+class Solution:
+    def __init__(self, experts_used: List[int] = None, projects_solved: List[int] = None, projects: List[Project] = None):
+        self.projects = projects
+        if self.projects is None:
+            self.experts_used = experts_used
+            self.num_of_experts_used = len(experts_used)
+            self.projects_solved = projects_solved
+            '''
+            for i in range(len(projects)):
+                if all([val == 0 for val in projects[i]]):
+                    self.projects_solved.append(projects[i])
+            '''
+
+            self.num_of_projects_solved = len(self.projects_solved)
+            self.projects = projects
 
     def print_result(self):
         print("--SOLUTION RESULT--")
-        print("Number of projects solved: " + str(self.num_of_projects_solved))
-        print("Number of experts used: " + str(self.num_of_experts_used))
-        print("Experts used: " + str(self.experts_used))
-        print("Projects solved: " + str(self.projects_solved))
+        if self.projects is None:
+            print("Number of projects solved: " + str(self.num_of_projects_solved))
+            print("Number of experts used: " + str(self.num_of_experts_used))
+            print("Experts used: " + str(self.experts_used))
+            print("Projects solved: " + str(self.projects_solved))
+        else:
+            count = 0
+            self.projects_solved = []
+            for i in range(len(self.projects)):
+                print('Project ' + str(i))
+                print('Experts used: ' + str(self.projects[i].experts_used))
+                count += len(self.projects[i].experts_used)
+                if all([val == 0 for val in self.projects[i].experts_used]):
+                    self.projects_solved.append(i)
+            self.num_of_experts_used = count
+            print("Projects solved: " + str(self.projects_solved))
+            print("Number of experts used: " + str(self.num_of_experts_used))
 
 
 class Main:
@@ -32,8 +71,10 @@ class Main:
         self.number_of_projects = 0
         self.number_of_experts = 0
         self.number_of_features = 0
-        self.experts = []
+        self.experts_as_lists = []
+        self.projects_as_lists = []
         self.projects = []
+        self.experts = []
         self.expert_combinations = []
         self.project_combinations = []
         self.solutions = []
@@ -44,8 +85,8 @@ class Main:
         print("Number of projects: " + str(self.number_of_projects))
         print("Number of experts: " + str(self.number_of_experts))
         print("Number of features: " + str(self.number_of_features))
-        print("Obtained projects: " + str(self.projects))
-        print("Obtained experts: " + str(self.experts))
+        print("Obtained projects: " + str(self.projects_as_lists))
+        print("Obtained experts: " + str(self.experts_as_lists))
 
     def read_csv(self):
         #  This will read our CSV file into a 2D list
@@ -66,33 +107,40 @@ class Main:
 
     def obtain_projects(self):
         for x in range(1, self.number_of_projects + 1):
-            self.projects.append(list(map(int, self.data[x])))
+            self.projects_as_lists.append(list(map(int, self.data[x])))
+            project = Project()
+            project.experts_needed = list(map(int, self.data[x]))
+            project.experts_used = list([0 for i in range(self.number_of_features)])
+            self.projects.append(project)
 
     def obtain_experts(self):
         for x in range(self.number_of_projects + 1, self.number_of_projects + self.number_of_experts + 1):
-            self.experts.append(list(map(int, self.data[x])))
+            self.experts_as_lists.append(list(map(int, self.data[x])))
+            expert = Expert()
+            expert.features = list(map(int, self.data[x]))
+            self.experts.append(expert)
 
     def solve_brute_force(self):
-        expert_indices = [i for i in range(len(self.experts))]  # Get list of indices of experts
-        project_indices = [i for i in range(len(self.projects))]
+        expert_indices = [i for i in range(len(self.experts_as_lists))]  # Get list of indices of experts
+        project_indices = [i for i in range(len(self.projects_as_lists))]
 
         # Find every combination of expert indices (of length len(self.experts))
-        self.expert_combinations = list(itertools.permutations(expert_indices, len(self.experts)))
+        self.expert_combinations = list(itertools.permutations(expert_indices, len(self.experts_as_lists)))
 
         # Find every combination of project indices
-        for length in range(1, len(self.projects) + 1):
+        for length in range(1, len(self.projects_as_lists) + 1):
             for subset in itertools.permutations(project_indices, length):
                 self.project_combinations.append(list(subset))
 
         print("Project combinations: " + str(self.project_combinations))
         print("Expert combinations: " + str(self.expert_combinations))
-        
+
         # Loop through every combination of experts and projects and find a solution
         for expert_combination in self.expert_combinations:
             for project_combination in self.project_combinations:
                 # Copy list of experts and projects to a temp variable so we can distinguish between solutions
-                current_experts = list([list(self.experts[i]) for i in expert_combination])
-                current_projects = list([list(self.projects[i]) for i in project_combination])
+                current_experts = list([list(self.experts_as_lists[i]) for i in expert_combination])
+                current_projects = list([list(self.projects_as_lists[i]) for i in project_combination])
                 # print("Current Projects: " + str(current_projects))
                 # print("Current experts: " + str(current_experts))
                 expert_idx = 0
@@ -117,6 +165,24 @@ class Main:
                     expert_idx += 1
                 self.solutions.append(Solution(experts_used, projects_solved))
 
+    def solve_gman(self):
+        self.projects.sort()
+        sorted_projects = [x.experts_needed for x in self.projects]
+        print("Sorted projects: " + str(sorted_projects))
+        for i in range(self.number_of_experts):
+            expert_was_used = False
+            for j in range(self.number_of_projects):
+                # Check if expert is needed for a given project:
+                for k in range(self.number_of_features):
+                    if self.projects[j].experts_needed[k] > 0 and self.experts[i].features[k] > 0:
+                        if not expert_was_used:
+                            self.projects[j].experts_needed[k] -= 1
+                            self.projects[j].experts_used.append(i)
+                            expert_was_used = True
+                            break
+
+        # TODO implement swapping of remaining experts
+        self.solutions.append(Solution(projects=self.projects))
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # The argument is of the form -f or --file.
@@ -127,6 +193,7 @@ if __name__ == '__main__':
     program_args = vars(parser.parse_args())
     main = Main(program_args['file'])
     main.read_csv()
-    main.solve_brute_force()
+    # main.solve_brute_force()
+    main.solve_gman()
     for solution in main.solutions:
         solution.print_result()
