@@ -57,7 +57,7 @@ class Solution:
                 print('Project ' + str(i))
                 print('Experts used: ' + str(self.projects[i].experts_used))
                 count += len(self.projects[i].experts_used)
-                if all([val == 0 for val in self.projects[i].experts_used]):
+                if all([val == 0 for val in self.projects[i].experts_needed]):
                     self.projects_solved.append(i)
             self.num_of_experts_used = count
             print("Projects solved: " + str(self.projects_solved))
@@ -110,7 +110,7 @@ class Main:
             self.projects_as_lists.append(list(map(int, self.data[x])))
             project = Project()
             project.experts_needed = list(map(int, self.data[x]))
-            project.experts_used = list([0 for i in range(self.number_of_features)])
+            project.experts_used = list()
             self.projects.append(project)
 
     def obtain_experts(self):
@@ -171,6 +171,7 @@ class Main:
         print("Sorted projects: " + str(sorted_projects))
         for i in range(self.number_of_experts):
             expert_was_used = False
+            # print(str(self.projects[i].experts_used))
             for j in range(self.number_of_projects):
                 # Check if expert is needed for a given project:
                 for k in range(self.number_of_features):
@@ -178,6 +179,7 @@ class Main:
                         if not expert_was_used:
                             self.projects[j].experts_needed[k] -= 1
                             self.projects[j].experts_used.append(i)
+                            self.experts[i].used_for_feature = k
                             expert_was_used = True
                             break
 
