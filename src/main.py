@@ -2,6 +2,9 @@ import argparse
 import csv
 import itertools
 from typing import List
+from copy import deepcopy
+import os
+import time
 
 
 class Expert:
@@ -28,40 +31,30 @@ class Project:
 
 
 class Solution:
-    def __init__(self, experts_used: List[int] = None, projects_solved: List[int] = None, projects: List[Project] = None):
+    def __init__(self, projects: List[Project] = None):
         self.projects = projects
-        if self.projects is None:
-            self.experts_used = experts_used
-            self.num_of_experts_used = len(experts_used)
-            self.projects_solved = projects_solved
-            '''
-            for i in range(len(projects)):
-                if all([val == 0 for val in projects[i]]):
-                    self.projects_solved.append(projects[i])
-            '''
-
-            self.num_of_projects_solved = len(self.projects_solved)
-            self.projects = projects
+        self.projects_solved = []
+        self.num_of_experts_used = 0
+        self.num_of_projects_solved = 0
+        count = 0
+        for i in range(len(self.projects)):
+            # print('Project ' + str(i))
+            # print(str(self.projects[i].experts_needed))
+            # print('Experts used: ' + str(self.projects[i].experts_used))
+            count += len(self.projects[i].experts_used)
+            if all([val == 0 for val in self.projects[i].experts_needed]):
+                self.projects_solved.append(i)
+        self.num_of_experts_used = count
+        self.num_of_projects_solved = len(self.projects_solved)
 
     def print_result(self):
         print("--SOLUTION RESULT--")
-        if self.projects is None:
-            print("Number of projects solved: " + str(self.num_of_projects_solved))
-            print("Number of experts used: " + str(self.num_of_experts_used))
-            print("Experts used: " + str(self.experts_used))
-            print("Projects solved: " + str(self.projects_solved))
-        else:
-            count = 0
-            self.projects_solved = []
-            for i in range(len(self.projects)):
-                print('Project ' + str(i))
-                print('Experts used: ' + str(self.projects[i].experts_used))
-                count += len(self.projects[i].experts_used)
-                if all([val == 0 for val in self.projects[i].experts_needed]):
-                    self.projects_solved.append(i)
-            self.num_of_experts_used = count
-            print("Projects solved: " + str(self.projects_solved))
-            print("Number of experts used: " + str(self.num_of_experts_used))
+        for i in range(len(self.projects)):
+            print('Project ' + str(i))
+            print('Experts used: ' + str(self.projects[i].experts_used))
+        print('Num of projects solved: ' + str(self.num_of_projects_solved))
+        print("Projects solved: " + str(self.projects_solved))
+        print("Number of experts used: " + str(self.num_of_experts_used))
 
 
 class Main:
@@ -120,52 +113,57 @@ class Main:
             expert.features = list(map(int, self.data[x]))
             self.experts.append(expert)
 
-    def solve_brute_force(self):
-        expert_indices = [i for i in range(len(self.experts_as_lists))]  # Get list of indices of experts
-        project_indices = [i for i in range(len(self.projects_as_lists))]
+    def solve_brute_force(self, find_all_solutions: bool = False):
+        self.solutions.clear()
+        expert_indices = [i for i in range(len(self.experts))]  # Get list of indices of experts
+        project_indices = [i for i in range(len(self.projects))]
 
         # Find every combination of expert indices (of length len(self.experts))
-        self.expert_combinations = list(itertools.permutations(expert_indices, len(self.experts_as_lists)))
+        self.expert_combinations = list(itertools.permutations(expert_indices, len(self.experts)))
 
         # Find every combination of project indices
         for length in range(1, len(self.projects_as_lists) + 1):
             for subset in itertools.permutations(project_indices, length):
                 self.project_combinations.append(list(subset))
 
-        print("Project combinations: " + str(self.project_combinations))
-        print("Expert combinations: " + str(self.expert_combinations))
-
+        # print("Project combinations: " + str(self.project_combinations))
+        # print("Expert combinations: " + str(self.expert_combinations))
+        print("Expected amount of iterations: " + str(len(self.project_combinations) * len(self.expert_combinations) * self.number_of_experts * self.number_of_projects))
+        best_solution = Solution(projects=list())
         # Loop through every combination of experts and projects and find a solution
         for expert_combination in self.expert_combinations:
             for project_combination in self.project_combinations:
                 # Copy list of experts and projects to a temp variable so we can distinguish between solutions
-                current_experts = list([list(self.experts_as_lists[i]) for i in expert_combination])
-                current_projects = list([list(self.projects_as_lists[i]) for i in project_combination])
-                # print("Current Projects: " + str(current_projects))
-                # print("Current experts: " + str(current_experts))
+                current_experts = list([deepcopy(self.experts[i]) for i in expert_combination])
+                current_projects = list([deepcopy(self.projects[i]) for i in project_combination])
+                # print("Current Projects: " + str(project_combination))
+                # print("Current experts: " + str(expert_combination))
                 expert_idx = 0
-                experts_used = []
-                projects_solved = []
                 for expert in current_experts:
                     expert_was_used = False
-                    project_idx = 0
                     # Try to apply expert to all projects
                     for project in current_projects:
                         if not expert_was_used:
                             for j in range(self.number_of_features):
-                                if project[j] > 0 and expert[j] > 0:
-                                    project[j] -= 1
-                                    # expert[j] = 0  # So this expert does not get used again
+                                if project.experts_needed[j] > 0 and expert.features[j] > 0:
+                                    project.experts_needed[j] -= 1
                                     expert_was_used = True
-                                    experts_used.append(expert_combination[expert_idx])
-                                    if all([val == 0 for val in project]):
-                                        projects_solved.append(project_combination[project_idx])
+                                    project.experts_used.append(expert_combination[expert_idx])
+                                    # expert.used_for_feature = j
                                     break
-                        project_idx += 1
                     expert_idx += 1
-                self.solutions.append(Solution(experts_used, projects_solved))
+                new_solution = Solution(list(current_projects))
+                if find_all_solutions:
+                    self.solutions.append(new_solution)
+                else:
+                    if new_solution.num_of_projects_solved > best_solution.num_of_projects_solved:
+                        best_solution = new_solution
+
+        if not find_all_solutions:
+            self.solutions.append(best_solution)
 
     def solve_gman(self):
+        self.solutions.clear()
         self.projects.sort()
         sorted_projects = [x.experts_needed for x in self.projects]
         print("Sorted projects: " + str(sorted_projects))
@@ -174,9 +172,9 @@ class Main:
             # print(str(self.projects[i].experts_used))
             for j in range(self.number_of_projects):
                 # Check if expert is needed for a given project:
-                for k in range(self.number_of_features):
-                    if self.projects[j].experts_needed[k] > 0 and self.experts[i].features[k] > 0:
-                        if not expert_was_used:
+                if not expert_was_used:
+                    for k in range(self.number_of_features):
+                        if self.projects[j].experts_needed[k] > 0 and self.experts[i].features[k] > 0:
                             self.projects[j].experts_needed[k] -= 1
                             self.projects[j].experts_used.append(i)
                             self.experts[i].used_for_feature = k
@@ -185,6 +183,7 @@ class Main:
 
         # TODO implement swapping of remaining experts
         self.solutions.append(Solution(projects=self.projects))
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # The argument is of the form -f or --file.
@@ -194,8 +193,11 @@ if __name__ == '__main__':
                         const='../resources/test.csv', help='Path to input CSV file to be read')
     program_args = vars(parser.parse_args())
     main = Main(program_args['file'])
+    print('Current working directory: ' + os.getcwd())
     main.read_csv()
-    # main.solve_brute_force()
-    main.solve_gman()
+    start_time = time.time()
+    main.solve_brute_force()
+    # main.solve_gman()
+    print("Execution time: {:.2f}s".format(time.time() - start_time))
     for solution in main.solutions:
         solution.print_result()
