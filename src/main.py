@@ -3,6 +3,9 @@ import csv
 import itertools
 from typing import List
 from copy import deepcopy
+import os
+import time
+
 
 class Expert:
     def __init__(self):
@@ -190,8 +193,11 @@ if __name__ == '__main__':
                         const='../resources/test.csv', help='Path to input CSV file to be read')
     program_args = vars(parser.parse_args())
     main = Main(program_args['file'])
+    print('Current working directory: ' + os.getcwd())
     main.read_csv()
+    start_time = time.time()
     main.solve_brute_force()
     # main.solve_gman()
+    print("Execution time: {:.2f}s".format(time.time() - start_time))
     for solution in main.solutions:
         solution.print_result()
