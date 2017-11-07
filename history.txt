@@ -1,0 +1,98 @@
+commit 78703984cfaeaef64545072a668fd60ae3d5ad3b
+Author: mohammed fardin <fardeenmohdpl@gmail.com>
+Date:   Tue Nov 7 17:37:14 2017 +0100
+
+    - Final Commit
+
+commit e3e07dfdbc2e3763724bb178b6cf5f711e30a3f2
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Tue Nov 7 17:02:32 2017 +0100
+
+    Added dist directory with exe file
+
+commit 0ddbc8c680640b2d84b50f5c762453f891325ec0
+Merge: 1414fa9 f2ca598
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Tue Oct 24 16:32:20 2017 +0200
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 1414fa9023f3c995aa9f03b8ba1103461330e745
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Tue Oct 24 16:31:47 2017 +0200
+
+    added five.csv
+
+commit f2ca5980f8c4d73f77cc4b95f7399f287baaf207
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Tue Oct 24 14:45:34 2017 +0200
+
+    we now print cwd and execution time of program
+
+commit 4ba7c4c21d8a440c5311252ec7e4ddad805d0807
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Tue Oct 24 00:55:52 2017 +0200
+
+    fixed and cleaned up a lot of stuff in Solution and solve brute force
+
+commit 1c456ccd9026ca70a14f31463e94b79cb5c7d6b1
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Mon Oct 23 17:33:52 2017 +0200
+
+    fixed bug with gman
+
+commit ef97f50736592a8765eeddef4dd3469fe18880da
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Mon Oct 23 17:22:25 2017 +0200
+
+    initial implementation of gman's algorithm, still bugged output
+
+commit 56fb2bb4c884fe2d5adb5c6991ed32a16c1274fa
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Sat Oct 21 23:01:32 2017 +0200
+
+    added better print output
+
+commit a809ef72bddef4559689472df249c64a5c1daa64
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Sat Oct 21 22:53:24 2017 +0200
+
+    Added first version of brute force solution
+
+commit f92ab9842cc6172f7d2cf9cd515e0d1884f47c8f
+Author: fardeenmohd <fardeenmohdpl@gmail.com>
+Date:   Mon Oct 16 23:31:04 2017 +0200
+
+    + experts and projects are list of list of integers now
+
+commit 93ac13cca689005c1acc6507892b80980fea17f9
+Author: fardeenmohd <fardeenmohdpl@gmail.com>
+Date:   Mon Oct 16 23:19:56 2017 +0200
+
+    +parsing for the experts
+    +parsing for the projects
+
+commit 5c6e3cc6aea2ea06f98fb211959f5f3679b0bbc4
+Author: fardeenmohd <fardeenmohdpl@gmail.com>
+Date:   Mon Oct 16 23:18:14 2017 +0200
+
+    +parsing for the experts
+    +parsing for the projects
+
+commit 9362b44124e1f6c44b9b8ef78ef67cf313e14eb4
+Author: fardeenmohd <fardeenmohdpl@gmail.com>
+Date:   Mon Oct 16 22:52:54 2017 +0200
+
+    + made the main file more object oriented
+
+commit 53734e248656cc24ef40edddffc0e38a14ffa136
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Mon Oct 16 19:43:16 2017 +0200
+
+    added vcs file
+
+commit e80cd2c9c13c11b7165beeae2ad76dd16a254d39
+Author: matrackif <filip.matracki@gmail.com>
+Date:   Mon Oct 16 19:29:34 2017 +0200
+
+    Initial commit
